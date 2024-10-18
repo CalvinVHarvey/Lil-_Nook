@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-from urllib.request import urlopen
 import json
 from datetime import datetime
 
@@ -13,14 +12,16 @@ parser = BeautifulSoup(schedule_html.content, "html.parser")
 schedule_parsed = parser.find('script', type="application/ld+json") 
 schedule_text = schedule_parsed.get_text()
 json_schedule = json.loads(schedule_text)
-date_tuple = {}
+hockey_dates = {}
 
 num = 0
 for i in json_schedule:  #Loading Dates
-    tmp = json_schedule[num]['startDate'].split('T')[0].split('-')
-    date_tuple[num] = (datetime(int(tmp[0]), int(tmp[1]), int(tmp[2])))
+    dates = json_schedule[num]['startDate'].split('T')
+    tmp = dates[0].split('-')
+    tmp_time = dates[1].split(':')
+    hockey_dates[num] = (datetime(int(tmp[0]), int(tmp[1]), int(tmp[2]), int(tmp_time[0]), int(tmp_time[1])))
     num += 1
-
+print(hockey_dates[0])
 #Match schedule to NCAA Hockey game ID's 
 #Go through dates then locate alaska fairbanks college then grab game id
 #Load game id into datastructure
