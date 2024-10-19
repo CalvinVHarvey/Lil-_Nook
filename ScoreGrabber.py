@@ -18,6 +18,7 @@ class ScoreGrabber:
     
     #Sport settings the current sport determines which sport to pull statistics from the web from and sport map contains
     #useful information to the program to pull information such as what division UAF team is in and what the sport code is
+    #To change the UAF sport the program pulls from change the SPORT variable to one of the keys in the sport map
     SPORT = 'mens-ice-hockey'
     SPORT_MAP = {
         "mens-ice-hockey": {"code":"MIH", "division":1},
@@ -114,5 +115,4 @@ class ScoreGrabber:
             elif cur_date > right_now:
                 return {"id":i, "json": game_json['data']['contests'][0]}
         return 0
-
-
+    
