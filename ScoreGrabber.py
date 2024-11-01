@@ -110,9 +110,12 @@ class ScoreGrabber:
         for i in self.game_ids:
             cur_date = self.game_ids[i]['date']
             game_json = self.grab_game_json(i)
-            if cur_date == today and game_json['contests'][0]['gameState'] != 'F':
+            if cur_date.day == today.day and cur_date.month == today.month and cur_date.year == today.year and game_json['data']['contests'][0]['gameState'] != 'F':
                 return {"id":i, "json":game_json['data']['contests'][0]} # trimming down json noise
             elif cur_date > right_now:
                 return {"id":i, "json": game_json['data']['contests'][0]}
         return 0
-    
+grabber = ScoreGrabber()
+cur_game = grabber.grab_most_recent_game()
+print(cur_game)
+print (grabber.game_ids[cur_game['id']])
