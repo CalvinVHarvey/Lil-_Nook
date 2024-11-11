@@ -5,6 +5,17 @@ import time
 import datetime
 import simpleaudio as sa
 
+#@Purpose: Interfacing with the raspberry pi while integrating the ScoreGrabber Class
+#Setting up the LED matrix to display count down to next game if there is no game going on
+#Otherwise display live stats of current game and play sound when a team scores a point
+#Play sound as well when the game starts and when the game ends different effects dependent on whether it was UAF that scored
+#or the other team
+#
+#@Date: 11/10/2024
+#@Author: Calvin Harvey
+#
+
+
 #Hardware Configuration for LED matrix
 options1 = RGBMatrixOptions()
 options1.rows = 32
@@ -48,9 +59,8 @@ delay = 0.05 #Time in seconds
 request_delay = 5 #Set time for every reqeust in seconds
 cur_time_till_request = 0 #Time until next request for game info
 while True:
-    #If first statement true then there is a live game else it is waiting for next game
     offscreen_canvas.Clear()
-    if cur_time_till_request == 0:
+    if cur_time_till_request == 0: #Check to see if there is a different game that was just pulled if so determine if the team won if last game was in session
         tmp_game = grabber.grab_most_recent_game()
         if cur_game != 0 and cur_game['id'] != tmp_game['id'] and cur_game["json"]["gameState"] == 'I':
             team1 = cur_game['json']['teams'][0]
@@ -69,10 +79,10 @@ while True:
     elif cur_time_till_request > request_delay:
         cur_time_till_request = 0
     cur_time_till_request += delay
-    if cur_game != 0 and cur_game['json']['gameState'] == 'I':
+    if cur_game != 0 and cur_game['json']['gameState'] == 'I': #If first statement true then there is a live game else it is waiting for next game
         pos1 -= 1
         pos2 -= 1
-        if game_started == False:
+        if game_started == False: #If game just started play audio
             gamestart.play()
             game_started = True
         if pos1 + length1 < 0:
@@ -98,7 +108,7 @@ while True:
         graphics.DrawText(offscreen_canvas, font2, 3, 18, graphics.Color(255,255,0), str(score1))
         length2 = graphics.DrawText(offscreen_canvas, font2, pos2, 26, graphics.Color(180,180,180), team2)
         graphics.DrawText(offscreen_canvas, font2, 3, 32, graphics.Color(255,255,0), str(score2))
-    elif cur_game != 0:
+    elif cur_game != 0:  #Display count down to next game if there is currently not a game going on
         game_id = cur_game["id"]
         game_info = grabber.game_ids[game_id]["date"]
         diff = (game_info-datetime.datetime.now())
@@ -108,5 +118,5 @@ while True:
         length2 = graphics.DrawText(offscreen_canvas, font, offscreen_canvas.width/2 - length2/2, 8, graphics.Color(0,255,255), "Next Game")
         graphics.DrawText(offscreen_canvas, font, offscreen_canvas.width/2 - length1/2, offscreen_canvas.height/2, graphics.Color(255,255,0), "Days: " + str(diff.days))
         length1 = graphics.DrawText(offscreen_canvas, font, offscreen_canvas.width/2 - length1/2, offscreen_canvas.height/2 + 8, graphics.Color(0,255,255), str(diff.seconds//3600) + ":" + str(diff.seconds%3600//60) + ":" + str(diff.seconds%60))
-    offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
+    offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas) #End if statement
     time.sleep(delay)
