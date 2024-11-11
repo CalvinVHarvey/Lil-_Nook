@@ -13,6 +13,7 @@ import simpleaudio as sa
 #
 #@Date: 11/10/2024
 #@Author: Calvin Harvey
+#@Note: If planning on replicating change file paths to absolute paths instead of relative paths
 #
 
 
