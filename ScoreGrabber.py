@@ -115,7 +115,3 @@ class ScoreGrabber:
             elif cur_date > right_now:
                 return {"id":i, "json": game_json['data']['contests'][0]}
         return 0
-grabber = ScoreGrabber()
-cur_game = grabber.grab_most_recent_game()
-print(cur_game)
-print (grabber.game_ids[cur_game['id']])
