@@ -40,8 +40,14 @@ text_color = graphics.Color(0, 255, 255)
 offscreen_canvas = matrix.CreateFrameCanvas()
 
 #Configuration for UAF sports grabbing library
-grabber = ScoreGrabber()
-cur_game = 0
+cur_game = -1
+while cur_game == -1: 
+    try:
+        grabber = ScoreGrabber()
+        cur_game = 0
+    except:
+        print("Connection Failed")
+        time.sleep(5)
 
 print("Game information obtained")
 
