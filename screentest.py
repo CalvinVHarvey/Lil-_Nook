@@ -64,10 +64,10 @@ our_team = "Alas. Fairbanks"
 #Running Screen
 delay = 0.05 #Time in seconds
 request_delay = 5 #Set time for every reqeust in seconds
-cur_time_till_request = 0 #Time until next request for game info
+cur_time_till_request = 5 #Time until next request for game info
 while True:
     offscreen_canvas.Clear()
-    if cur_time_till_request == 0: #Check to see if there is a different game that was just pulled if so determine if the team won if last game was in session
+    if cur_time_till_request >= request_delay: #Check to see if there is a different game that was just pulled if so determine if the team won if last game was in session
         tmp_game = grabber.grab_most_recent_game()
         if cur_game != 0 and cur_game['id'] != tmp_game['id'] and cur_game["json"]["gameState"] == 'I':
             team1 = cur_game['json']['teams'][0]
@@ -83,7 +83,6 @@ while True:
                 else:
                     welose.play()
         cur_game = tmp_game
-    elif cur_time_till_request > request_delay:
         cur_time_till_request = 0
     cur_time_till_request += delay
     if cur_game != 0 and cur_game['json']['gameState'] == 'I': #If first statement true then there is a live game else it is waiting for next game
